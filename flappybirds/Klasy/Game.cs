@@ -1,6 +1,7 @@
 using Raylib_cs;
 using System.Numerics;
 using FlappyBird.Klasy;
+using flappybirds.Klasy;
 
 namespace FlappyBird
 {
@@ -14,12 +15,14 @@ namespace FlappyBird
         private int countdown = 3;
         private float countdownTimer = 0;
         private int score = 0;
+        private PipeManager pipeManager;
 
         public void Initialize()
         {
             Raylib.InitWindow(screenWidth, screenHeight, "Flappy Bird Game");
             Raylib.SetTargetFPS(60);
             bird = new Bird(new Vector2(screenWidth / 4, screenHeight / 2), gravity);
+            pipeManager = new PipeManager(screenHeight, screenWidth);
 
             gameStatus = GameStatus.Ready;
             countdown = 3; 
@@ -51,6 +54,9 @@ namespace FlappyBird
                 {
                     bird.Flap();
                 }
+                
+                score = pipeManager.AddPoint(score);
+                pipeManager.Update();
 
 
                 if (bird.CheckCollisionWithGround(screenHeight))
@@ -73,6 +79,7 @@ namespace FlappyBird
             else
             {
                 bird.Draw();
+                pipeManager.Draw();
                 if (gameStatus == GameStatus.GameOver)
                 {
                     Raylib.DrawText("KONIEC GRY", screenWidth / 2 - 200, screenHeight / 2 - 50, 70, Raylib_cs.Color.Red);
